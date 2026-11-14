@@ -1,1 +1,15 @@
+body {
+    background-color: #171923;
+    color: #d6d6df;
+    font-family: monospace;
+    text-align: center;
+}
 
+canvas {
+    border: 2px solid #55556b;
+    background-color: #252735;
+    image-rendering: pixelated;
+    width: 640px;
+    height: 400px;
+    max-width: 95%;
+}
