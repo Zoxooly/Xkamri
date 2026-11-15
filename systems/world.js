@@ -1,4 +1,3 @@
-
 class World {
     constructor(width, height) {
         this.width = width;
