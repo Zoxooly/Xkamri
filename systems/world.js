@@ -1,4 +1,4 @@
-
+const world = new World(20, 12);
 class World {
     constructor(width, height) {
         this.width = width;
