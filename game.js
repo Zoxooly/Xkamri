@@ -1,11 +1,14 @@
-alert("Game.js is running");
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 320;
-canvas.height = 200;
+const TILE_SIZE = 16;
 
-// Player
+canvas.width = 320;
+canvas.height = 192;
+
+// Create world and player
+const world = new World(20, 12);
 const player = new Player();
 
 // Input
@@ -13,20 +16,10 @@ const keys = {};
 
 document.addEventListener("keydown", (e) => {
     keys[e.key.toLowerCase()] = true;
-
-    if (["arrowup", "arrowdown", "arrowleft", "arrowright"].includes(e.key.toLowerCase())) {
-        e.preventDefault();
-    }
 });
 
 document.addEventListener("keyup", (e) => {
     keys[e.key.toLowerCase()] = false;
-});
-
-window.addEventListener("blur", () => {
-    for (const key in keys) {
-        keys[key] = false;
-    }
 });
 
 // Update
@@ -34,34 +27,35 @@ function update() {
     let dx = 0;
     let dy = 0;
 
-    if (keys["w"] || keys["arrowup"]) dy--;
-    if (keys["s"] || keys["arrowdown"]) dy++;
-    if (keys["a"] || keys["arrowleft"]) dx--;
-    if (keys["d"] || keys["arrowright"]) dx++;
+    if (keys["w"] || keys["arrowup"]) dy = -1;
+    if (keys["s"] || keys["arrowdown"]) dy = 1;
+    if (keys["a"] || keys["arrowleft"]) dx = -1;
+    if (keys["d"] || keys["arrowright"]) dx = 1;
 
-    // Normalize diagonal movement
-    const length = Math.hypot(dx, dy);
+    if (dx !== 0 || dy !== 0) {
+        const newX = player.x + dx;
+        const newY = player.y + dy;
 
-    if (length > 0) {
-        dx /= length;
-        dy /= length;
+        if (world.isWalkable(newX, newY)) {
+            player.x = newX;
+            player.y = newY;
+        }
+
+        // Prevent continuous movement from holding a key
+        keys["w"] = false;
+        keys["a"] = false;
+        keys["s"] = false;
+        keys["d"] = false;
+        keys["arrowup"] = false;
+        keys["arrowdown"] = false;
+        keys["arrowleft"] = false;
+        keys["arrowright"] = false;
     }
-
-    player.move(dx, dy);
-
-    // Keep player inside the world
-    player.x = Math.max(player.size / 2, Math.min(320 - player.size / 2, player.x));
-    player.y = Math.max(player.size / 2, Math.min(200 - player.size / 2, player.y));
 }
 
 // Draw
 function draw() {
-    ctx.fillStyle = "#252735";
-    ctx.fillRect(0, 0, 320, 200);
-
-    ctx.fillStyle = "#d6d6df";
-    ctx.font = "12px monospace";
-    ctx.fillText("UNKNOWN WORLD", 10, 20);
+    world.draw(ctx, TILE_SIZE);
 
     player.draw(ctx);
 }
@@ -75,5 +69,3 @@ function gameLoop() {
 }
 
 gameLoop();
-
-
