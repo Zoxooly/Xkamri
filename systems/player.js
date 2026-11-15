@@ -1,21 +1,17 @@
+
 class Player {
     constructor() {
-        this.x = 160;
-        this.y = 100;
-        this.speed = 2;
-        this.size = 8;
-    }
-
-    move(dx, dy) {
-        this.x += dx * this.speed;
-        this.y += dy * this.speed;
+        this.x = 10;
+        this.y = 6;
+        this.size = 10;
     }
 
     draw(ctx) {
         ctx.fillStyle = "#e6c878";
+
         ctx.fillRect(
-            this.x - this.size / 2,
-            this.y - this.size / 2,
+            this.x * 16 + (16 - this.size) / 2,
+            this.y * 16 + (16 - this.size) / 2,
             this.size,
             this.size
         );
